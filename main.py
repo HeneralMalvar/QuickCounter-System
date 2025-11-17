@@ -5,13 +5,16 @@ from PyQt6.QtWidgets import (
     QPushButton, QStackedWidget, QButtonGroup, QLineEdit, QGridLayout, QTableWidget, QTableWidgetItem, QHeaderView
 )
 from PyQt6.QtCore import Qt
+import datetime
+
 
 
 class CounterApp(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Counter")
+        self.setWindowTitle("Quick Counter CnDev+")
         self.setGeometry(300, 300, 500, 600)
+        self.setFixedSize(500, 600)
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(0)
@@ -20,10 +23,14 @@ class CounterApp(QWidget):
         top_layout = QHBoxLayout()
         top_layout.setContentsMargins(15,15,15,0)
         top_layout.setSpacing(0)
+        self.lbl_info = QLabel("F1: Checkup, F2: Follow-up Checkup, F3: Checkup +SSS")
+        self.lbl_info.setStyleSheet("font-size: 16px; font-weight: bold; color: cyan;")
+        self.lbl_info.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.lbl_counter = QLabel("Total Count: 0")
         self.lbl_total = QLabel("Total Income: 0")
         self.lbl_counter.setStyleSheet("font-size: 16px; font-weight: bold;")
         self.lbl_total.setStyleSheet("font-size: 16px; font-weight: bold;")
+        root.addWidget(self.lbl_info)
         top_layout.addWidget(self.lbl_counter)
         top_layout.addStretch()
         top_layout.addWidget(self.lbl_total)
@@ -56,12 +63,21 @@ class CounterApp(QWidget):
 
     def add_item(self, description, price):
         row = self.table.rowCount()
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.table.insertRow(row)
         row_counter = row + 1
 
-        self.table.setItem(row,0,QTableWidgetItem(str(row_counter)))
-        self.table.setItem(row,1,QTableWidgetItem(description))
-        self.table.setItem(row,2,QTableWidgetItem(str(price)))
+        item_count = QTableWidgetItem(str(row_counter))
+        item_count.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.table.setItem(row, 0 , item_count)
+
+
+
+        self.table.setItem(row,1,QTableWidgetItem(description + ":     " + now))
+        item_price = QTableWidgetItem(str(price))
+        item_price.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.table.setItem(row, 2, item_price)
+
         self.update_totals()
 
     def delete_item(self):
@@ -73,6 +89,9 @@ class CounterApp(QWidget):
 
             for r in range(self.table.rowCount()):
                 self.table.setItem(r,0,QTableWidgetItem(str(r + 1)))
+                item_count = QTableWidgetItem(str(r +1))
+                item_count.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                self.table.setItem(r,0,item_count)
 
             self.update_totals()
 
